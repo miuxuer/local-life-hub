@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.llh.mapper.ShoppingCartMapper">
+
+    <!--查询购物车-->
+    <select id="list" resultType="com.llh.entity.ShoppingCart">
+        select * from shopping_cart
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="productId != null">
+                and product_id = #{productId}
+            </if>
+            <if test="comboId != null">
+                and combo_id = #{comboId}
+            </if>
+            <if test="productSpec != null and productSpec != ''">
+                and product_spec = #{productSpec}
+            </if>
+        </where>
+    </select>
+
+    <!--更新购物车（往购物车里添加新的商品）-->
+    <insert id="insert">
+        insert into shopping_cart (name, image, user_id, product_id, combo_id, product_spec, number, amount, create_time)
+        VALUES (#{name}, #{image}, #{userId}, #{productId}, #{comboId}, #{productSpec}, #{number}, #{amount},
+                #{createTime})
+    </insert>
+
+    <!--再来一单-->
+    <insert id="insertBatch">
+        insert into shopping_cart (name, image, user_id, product_id, combo_id, product_spec, number, amount, create_time)
+        VALUES
+        <foreach collection="shoppingCarts" item="sc" separator=",">
+            (#{sc.name}, #{sc.image}, #{sc.userId}, #{sc.productId}, #{sc.comboId}, #{sc.productSpec}, #{sc.number},
+            #{sc.amount}, #{sc.createTime})
+        </foreach>
+    </insert>
+
+
+</mapper>

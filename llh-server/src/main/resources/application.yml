@@ -1,0 +1,62 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev,local
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: ${llh.datasource.driver-class-name}
+    url: jdbc:mysql://${llh.datasource.host}:${llh.datasource.port}/${llh.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${llh.datasource.username}
+    password: ${llh.datasource.password}
+  data:
+    redis:
+      host: ${llh.data.redis.host}
+      port: ${llh.data.redis.port}
+  rabbitmq:
+    host: ${llh.rabbitmq.host}
+    port: ${llh.rabbitmq.port}
+    username: ${llh.rabbitmq.username}
+    password: ${llh.rabbitmq.password}
+    virtual-host: ${llh.rabbitmq.virtual-host}
+  elasticsearch:
+    uris: ${llh.elasticsearch.uris}
+
+
+mybatis:
+  #mapper配置文件
+  type-aliases-package: com.llh.entity
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com:
+      llh:
+        mapper: debug
+        service: info
+        controller: info
+
+llh:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: your-admin-jwt-secret
+    # 设置jwt过期时间
+    admin-ttl: 72000000000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+    user-secret-key: your-user-jwt-secret
+    user-ttl: 72000000000
+    user-token-name: authentication
+
+  alioss:
+    endpoint: ${llh.alioss.endpoint}
+    bucket-name: ${llh.alioss.bucket-name}
+    region: ${llh.alioss.region}
+
+  wechat:
+    appid: ${llh.wechat.appid}
+    secret: ${llh.wechat.secret}

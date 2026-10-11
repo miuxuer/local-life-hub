@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.llh.mapper.ProductMapper">
+
+    <!--新增商品-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"> /*主键返回，也可以在mapper层用注解*/
+    insert into product (name, category_id, price, image, description, status,
+                      create_time, update_time, create_user, update_user)
+    VALUES (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status},
+            #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <!--商品分页查询-->
+    <select id="pageQuery" resultType="com.llh.vo.ProductVO">
+        select d.*, c.name categoryName from product d left outer join category c on d.category_id = c.id
+        <where>
+            <if test="name != null and name != ''">
+                and d.name like concat('%', #{name}, '%')
+            </if>
+            <if test="categoryId != null">
+                and d.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and d.status = #{status}
+            </if>
+        </where>
+        order by d.create_time desc
+    </select>
+
+    <!--批量删除商品-->
+    <delete id="deleteByIds">
+        delete from product where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--修改商品-->
+    <update id="update">
+        update product
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="image != null and image != ''">image = #{image},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据分类查询商品-->
+    <select id="list" resultType="com.llh.entity.Product" parameterType="Product">
+        select * from product
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(id) from product
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+        </where>
+    </select>
+
+</mapper>
